@@ -9,6 +9,7 @@ import (
 //	"github.com/mjibson/go-dsp/fft"
 )
 
+// Show WAV data format
 func FmtDisplay(wfe *wave.WaveFormatExtensible){
 
 	fmt.Println("...")
@@ -18,7 +19,7 @@ func FmtDisplay(wfe *wave.WaveFormatExtensible){
 
 }
 
-
+// main
 func main(){
 
 	// File open and close
@@ -29,21 +30,27 @@ func main(){
 		errors.New("Can NOT open .wav file.")
 	}
 
-	// Read WAV data
+	// Read data from .wav file
 	data, wfe, erData := wave.NewReader(file)
 	// In case of error
 	if erData != nil{
 		errors.New("Can NOT read .wav data.")
 	}
-	// Show WAV data format
+	// Show wave data format
 	FmtDisplay(wfe)
 
-	// Data handle
-	inBuf := [][]float64{}
-	data.ReadFloat64Interleaved(inBuf)
-	//for i, val := range data.Data{
-	//	fmt.Println(i, val)
-	//}
+	// Create buf for data handle
+	inTmp := [][]float64{}
+	for i := 0; i < int(wfe.Format.Channels); i++ {
+		inTmp = append(inTmp, make([]float64, wfe.Format.SamplesPerSec))
+	}
 
+	// Read wave data from struct
+	n, erN := data.ReadFloat64Interleaved(inTmp)
+	if erN != nil{
+		errors.New("Can Not read data form struct")
+	}
+	// This is wave data
+	fmt.Println(inTmp[1])
 
 }
