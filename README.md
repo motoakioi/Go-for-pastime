@@ -3,7 +3,7 @@ This repository is NOT useful.
 There are datas and source codes for class report.
 
 ## Directories and Files
-.
+.   
 ├── LICENSE  
 ├── README.md  
 ├── classRealTimeSignalProcessing  
@@ -18,10 +18,9 @@ There are datas and source codes for class report.
 
 ## Import packages
 - classRealTimeSignalProcessing
--- fftWav
-[github.com/oov/audio/wave][github.com/oov/audio/wave]
+[github.com/oov/audio/wave](github.com/oov/audio/wave)
 
 ## Reference
-1.  [https://godoc.org/github.com/oov/audio/wave][https://godoc.org/github.com/oov/audio/wave]
+1.  [https://godoc.org/github.com/oov/audio/wave](https://godoc.org/github.com/oov/audio/wave)
 
 
