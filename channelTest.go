@@ -10,18 +10,9 @@ const (
 )
 
 func aMinuteWait(outCh chan string, num int) {
-	//time.Sleep(waitTime * 1000 * 1000 * time.Microsecond)
-	var a int
-	for i := 0; i < 1000000000; i++ {
-		for j := 0; j < 1000000000; j++ {
-			//if a < i {
-			a = i
-			//}
-		}
-	}
-
+	time.Sleep(waitTime * 1000 * 1000 * time.Microsecond)
 	//log.Print("Waited a minute.")
-	fmt.Println(num, "Waited a minute.")
+	fmt.Println("Waited a minute.")
 	outCh <- "finished waiting for a minute\n"
 }
 
