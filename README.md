@@ -18,9 +18,11 @@ There are datas and source codes for class report.
 
 ## Import packages
 - classRealTimeSignalProcessing
-[github.com/oov/audio/wave](github.com/oov/audio/wave)
-
+[github.com/oov/audio/wave](github.com/oov/audio/wave)  
+[gonum.org/v1/plot](gonum.org/v1/plot)  
+  
 ## Reference
-1.  [https://godoc.org/github.com/oov/audio/wave](https://godoc.org/github.com/oov/audio/wave)
+1.  [https://godoc.org/github.com/oov/audio/wave](https://godoc.org/github.com/oov/audio/wave)  
+2.  [https://godoc.org/gonum.org/v1/plot](https://godoc.org/gonum.org/v1/plot)
 
 
