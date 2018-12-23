@@ -12,6 +12,7 @@ import (
 //main
 func main() {
 
+	// Create figure
 	fig, erFig := plot.New()
 	if erFig != nil {
 		errors.New("Can NOT create figure")

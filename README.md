@@ -9,6 +9,7 @@ There are datas and source codes for class report.
 ├── classRealTimeSignalProcessing  
 │   └── fftWav  
 │       ├── 3octaves.wav  
+│       ├── fftWav.go   
 │       ├── graphPlot.go    
 │       └── wavRead.go  
 └── practice  
