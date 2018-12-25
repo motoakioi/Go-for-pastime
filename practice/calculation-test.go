@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import(
+	"fmt"
+	"math"
+)
 
 func addInt(in1 int, in2 int) int {
 	return in1 + in2
@@ -15,6 +18,9 @@ func calculation(in1 int, in2 int) (add int, mul int) {
 func main() {
 	var a, b, c, d, e int
 	var arrayTest [10]int
+
+	fmt.Println("pow test : ", math.Pow(5.0, 2.0))
+
 
 	a = 5
 	b = 3
