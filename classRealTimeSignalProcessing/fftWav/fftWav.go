@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"image/color"
 	"math"
 	"math/cmplx"
 	"os"
@@ -10,7 +11,7 @@ import (
 	"github.com/oov/audio/wave"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
-	"gonum.org/v1/plot/plotutil"
+	"gonum.org/v1/plot/vg"
 )
 
 // Show WAV data format
@@ -74,7 +75,7 @@ func CfgFigure(fig *plot.Plot) {
 
 	// Range for each axis
 	fig.X.Min = 0
-	fig.X.Max = 3000
+	fig.X.Max = 40000
 	fig.Y.Min = -0.12
 	fig.Y.Max = 0.12
 }
@@ -87,6 +88,23 @@ func cfgPoint(x float64, dx float64, y []float64) plotter.XYs {
 		plotTmp[i].Y = y[i]
 	}
 	return plotTmp
+}
+
+// Add line from data
+func addLine(fig *plot.Plot, xys plotter.XYs) {
+
+	// Create Line
+	plotLine, err := plotter.NewLine(xys)
+	if err != nil {
+		panic(err)
+	}
+	// Line config
+	plotLine.LineStyle.Width = vg.Points(1)
+	//plotLine.LineStyle.Dashes = []vg.Length{vg.Points(5), vg.Points(5)}
+	plotLine.LineStyle.Color = color.RGBA{B: 255, A: 255}
+
+	// Add line to figure
+	fig.Add(plotLine)
 }
 
 // Calculate power from complex number
@@ -122,14 +140,16 @@ func main() {
 	// Set figure
 	CfgFigure(fig)
 
-	//plotutil.AddLinePoints(fig, cfgPoint(float64(len(fftDataPow)), fftDataPow))
-	plotutil.AddLinePoints(fig, "raw", cfgPoint(float64(len(wavData[0])), 1.0, wavData[0]))
+	// Add data as line to figure
+	addLine(fig, cfgPoint(float64(len(wavData[0])), 1.0, wavData[0]))
+
 	/*
 		// Set function of plot
 		plotFunc := plotter.NewFunction(func(x float64) float64 { return myFunc(x) })
 		plotFunc.Color = color.RGBA{B: 255, A: 255}
 		fig.Add(plotFunc)
 	*/
+
 	// Save figure (width, height, file name)
 	fig.Save(1500, 400, "wave.pdf")
 
