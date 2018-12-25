@@ -22,9 +22,11 @@ There are datas and source codes for class report.
 ### classRealTimeSignalProcessing  
 - [github.com/oov/audio/wave](github.com/oov/audio/wave)  
 - [gonum.org/v1/plot](gonum.org/v1/plot)  
+- [github.com/mjibson/go-dsp/fft](github.com/mjibson/go-dsp/fft)  
   
 ## Reference
 1.  [https://godoc.org/github.com/oov/audio/wave](https://godoc.org/github.com/oov/audio/wave)  
-2.  [https://godoc.org/gonum.org/v1/plot](https://godoc.org/gonum.org/v1/plot)
+2.  [https://godoc.org/gonum.org/v1/plot](https://godoc.org/gonum.org/v1/plot)  
+3.  [https://godoc.org/github.com/mjibson/go-dsp/fft](https://godoc.org/github.com/mjibson/go-dsp/fft)  
 
 

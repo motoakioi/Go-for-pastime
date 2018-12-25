@@ -3,14 +3,14 @@ package main
 import (
 	"errors"
 	"fmt"
-	"image/color"
+	"math"
+	"math/cmplx"
 	"os"
 
 	"github.com/oov/audio/wave"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
-	//	"github.com/mjibson/go-dsp/wav"
-	//	"github.com/mjibson/go-dsp/fft"
+	"gonum.org/v1/plot/plotutil"
 )
 
 // Show WAV data format
@@ -24,7 +24,7 @@ func FmtDisplay(wfe *wave.WaveFormatExtensible) {
 }
 
 // Get wav data from file
-func getWavData(fileName string) [][]float64 {
+func getWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 
 	// File open and close
 	file, erFile := os.Open(fileName)
@@ -41,9 +41,6 @@ func getWavData(fileName string) [][]float64 {
 		errors.New("Can NOT read .wav data.")
 	}
 
-	// Show wave data format
-	FmtDisplay(wfe)
-
 	// Create buffer for data handle
 	inTmp := [][]float64{}
 	for i := 0; i < int(wfe.Format.Channels); i++ {
@@ -53,7 +50,7 @@ func getWavData(fileName string) [][]float64 {
 	// Read wave data from struct
 	data.ReadFloat64Interleaved(inTmp)
 
-	return inTmp
+	return inTmp, wfe
 }
 
 // Create figure
@@ -77,33 +74,64 @@ func CfgFigure(fig *plot.Plot) {
 
 	// Range for each axis
 	fig.X.Min = 0
-	fig.X.Max = 200
-	fig.Y.Min = 0
-	fig.Y.Max = 200
+	fig.X.Max = 3000
+	fig.Y.Min = -0.12
+	fig.Y.Max = 0.12
+}
+
+// Set plot struct
+func cfgPoint(x float64, dx float64, y []float64) plotter.XYs {
+	plotTmp := make(plotter.XYs, int(x/dx))
+	for i := 0; i < int(x/dx); i++ {
+		plotTmp[i].X = float64(i) * dx
+		plotTmp[i].Y = y[i]
+	}
+	return plotTmp
+}
+
+// Calculate power from complex number
+func c2power(inC []complex128) []float64 {
+	outR := []float64{}
+	for i := 0; i < len(inC); i++ {
+		outR = append(outR, math.Pow(cmplx.Abs(inC[1]), 2.0))
+	}
+	return outR
 }
 
 // main
 func main() {
 
 	// Get wav data from file
-	wavData := getWavData("./3octaves.wav")
+	wavData, wfe := getWavData("./3octaves.wav")
+
+	// Show wave data format
+	FmtDisplay(wfe)
 
 	// !meaningless
 	fmt.Println(wavData[0][0])
+	/*
+		// fft
+		fftDataC := fft.FFTReal(wavData[0])
 
+		// get power from complex number
+		fftDataPow := c2power(fftDataC)
+	*/
 	// Create figure
 	fig := cre8Figure()
 
 	// Set figure
 	CfgFigure(fig)
 
-	// Set function of plot
-	plotFunc := plotter.NewFunction(func(x float64) float64 { return myFunc(x) })
-	plotFunc.Color = color.RGBA{B: 255, A: 255}
-	fig.Add(plotFunc)
-
+	//plotutil.AddLinePoints(fig, cfgPoint(float64(len(fftDataPow)), fftDataPow))
+	plotutil.AddLinePoints(fig, "raw", cfgPoint(float64(len(wavData[0])), 1.0, wavData[0]))
+	/*
+		// Set function of plot
+		plotFunc := plotter.NewFunction(func(x float64) float64 { return myFunc(x) })
+		plotFunc.Color = color.RGBA{B: 255, A: 255}
+		fig.Add(plotFunc)
+	*/
 	// Save figure (width, height, file name)
-	fig.Save(150, 150, "test.pdf")
+	fig.Save(1500, 400, "wave.pdf")
 
 	fmt.Println("Done.")
 
