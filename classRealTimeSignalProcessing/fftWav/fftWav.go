@@ -49,7 +49,11 @@ func getWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 	}
 
 	// Read wave data from struct
-	data.ReadFloat64Interleaved(inTmp)
+	n, erN := data.ReadFloat64Interleaved(inTmp)
+	if erN != nil {
+		errors.New("Can NOT read data from inTmp.")
+	}
+	fmt.Println("n : ", n)
 
 	return inTmp, wfe
 }
@@ -75,14 +79,15 @@ func CfgFigure(fig *plot.Plot) {
 
 	// Range for each axis
 	fig.X.Min = 0
-	fig.X.Max = 40000
-	fig.Y.Min = -0.12
-	fig.Y.Max = 0.12
+	fig.X.Max = 55000
+	fig.Y.Min = -3
+	fig.Y.Max = 3
 }
 
 // Set plot struct
 func cfgPoint(x float64, dx float64, y []float64) plotter.XYs {
 	plotTmp := make(plotter.XYs, int(x/dx))
+	fmt.Println("x/dx : ", int(x/dx))
 	for i := 0; i < int(x/dx); i++ {
 		plotTmp[i].X = float64(i) * dx
 		plotTmp[i].Y = y[i]
@@ -120,13 +125,15 @@ func c2power(inC []complex128) []float64 {
 func main() {
 
 	// Get wav data from file
-	wavData, wfe := getWavData("./3octaves.wav")
+	wavData, wfe := getWavData("./1khz.wav")
 
 	// Show wave data format
 	FmtDisplay(wfe)
 
 	// !meaningless
-	fmt.Println(wavData[0][0])
+	for i := range wavData[0] {
+		fmt.Println(i, wavData[0][i])
+	}
 	/*
 		// fft
 		fftDataC := fft.FFTReal(wavData[0])
@@ -141,6 +148,7 @@ func main() {
 	CfgFigure(fig)
 
 	// Add data as line to figure
+	fmt.Println("wav len : ", len(wavData[0]))
 	addLine(fig, cfgPoint(float64(len(wavData[0])), 1.0, wavData[0]))
 
 	/*
