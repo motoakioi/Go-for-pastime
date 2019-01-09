@@ -152,10 +152,6 @@ func main() {
 	// Show wave data format
 	FmtDisplay(wfe)
 
-	/*	// !meaningless
-		for i := range wavData[0] {
-			//fmt.Println(i, wavData[0][i])
-		}
 	/*
 		// fft
 		fftDataC := fft.FFTReal(wavData[0])
