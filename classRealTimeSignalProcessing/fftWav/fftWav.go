@@ -35,6 +35,14 @@ func getWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 		errors.New("Can NOT open .wav file.")
 	}
 
+	// File Size
+	fInfo, erFInfo := file.Stat()
+	// In case of error
+	if erFInfo != nil {
+		errors.New("Can NOT get file information.")
+	}
+	fmt.Println("File size is ", fInfo.Size())
+
 	// Read data from .wav file
 	data, wfe, erData := wave.NewReader(file)
 	// In case of error
@@ -42,14 +50,25 @@ func getWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 		errors.New("Can NOT read .wav data.")
 	}
 
+	// Calculate duration
+	fSize := float32(fInfo.Size())
+	wavCh := float32(wfe.Format.Channels)
+	wavBit := float32(wfe.Format.BitsPerSample)
+	numSample := int(fSize / (wavCh * (wavBit / 8.0)))
+	fmt.Println("Duration is ", numSample)
+
 	// Create buffer for data handle
 	inTmp := [][]float64{}
-	for i := 0; i < int(wfe.Format.Channels); i++ {
-		inTmp = append(inTmp, make([]float64, wfe.Format.SamplesPerSec))
+	for i := 0; i < int(wavCh); i++ {
+		inTmp = append(inTmp, make([]float64, numSample))
 	}
 
 	// Read wave data from struct
-	data.ReadFloat64Interleaved(inTmp)
+	n, erN := data.ReadFloat64Interleaved(inTmp)
+	if erN != nil {
+		errors.New("Can NOT read data from inTmp.")
+	}
+	fmt.Println("n : ", n)
 
 	return inTmp, wfe
 }
@@ -65,8 +84,15 @@ func cre8Figure() *plot.Plot {
 	return fig
 }
 
+type plotRange struct {
+	xStart float64
+	xEnd   float64
+	yStart float64
+	yEnd   float64
+}
+
 // Set figure
-func CfgFigure(fig *plot.Plot) {
+func CfgFigure(fig *plot.Plot, figRange plotRange) {
 
 	// Label config
 	//fig.Title.Text = "CfgFigure func"
@@ -74,15 +100,16 @@ func CfgFigure(fig *plot.Plot) {
 	fig.Y.Label.Text = "y"
 
 	// Range for each axis
-	fig.X.Min = 0
-	fig.X.Max = 40000
-	fig.Y.Min = -0.12
-	fig.Y.Max = 0.12
+	fig.X.Min = figRange.xStart
+	fig.X.Max = figRange.xEnd
+	fig.Y.Min = figRange.yStart
+	fig.Y.Max = figRange.yEnd
 }
 
 // Set plot struct
 func cfgPoint(x float64, dx float64, y []float64) plotter.XYs {
 	plotTmp := make(plotter.XYs, int(x/dx))
+	fmt.Println("x/dx : ", int(x/dx))
 	for i := 0; i < int(x/dx); i++ {
 		plotTmp[i].X = float64(i) * dx
 		plotTmp[i].Y = y[i]
@@ -125,8 +152,11 @@ func main() {
 	// Show wave data format
 	FmtDisplay(wfe)
 
-	// !meaningless
-	fmt.Println(wavData[0][0])
+	/*	// !meaningless
+		for i := range wavData[0] {
+			//fmt.Println(i, wavData[0][i])
+		}
+	*/
 	/*
 		// fft
 		fftDataC := fft.FFTReal(wavData[0])
@@ -134,11 +164,19 @@ func main() {
 		// get power from complex number
 		fftDataPow := c2power(fftDataC)
 	*/
+
 	// Create figure
 	fig := cre8Figure()
 
+	// Set range of plot
+	var figRange plotRange
+	figRange.xStart = 0
+	figRange.xEnd = float64(len(wavData[0]))
+	figRange.yStart = -1.5
+	figRange.yEnd = 1.5
+
 	// Set figure
-	CfgFigure(fig)
+	CfgFigure(fig, figRange)
 
 	// Add data as line to figure
 	addLine(fig, cfgPoint(float64(len(wavData[0])), 1.0, wavData[0]))
@@ -155,8 +193,4 @@ func main() {
 
 	fmt.Println("Done.")
 
-}
-
-func myFunc(x float64) float64 {
-	return 0.2*x + 50
 }
