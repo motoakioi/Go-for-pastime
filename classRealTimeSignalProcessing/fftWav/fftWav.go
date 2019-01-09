@@ -147,7 +147,7 @@ func c2power(inC []complex128) []float64 {
 func main() {
 
 	// Get wav data from file
-	wavData, wfe := getWavData("./3octaves.wav")
+	wavData, wfe := getWavData("./1khz.wav")
 
 	// Show wave data format
 	FmtDisplay(wfe)
@@ -156,7 +156,6 @@ func main() {
 		for i := range wavData[0] {
 			//fmt.Println(i, wavData[0][i])
 		}
-	*/
 	/*
 		// fft
 		fftDataC := fft.FFTReal(wavData[0])
@@ -179,6 +178,7 @@ func main() {
 	CfgFigure(fig, figRange)
 
 	// Add data as line to figure
+	fmt.Println("wav len : ", len(wavData[0]))
 	addLine(fig, cfgPoint(float64(len(wavData[0])), 1.0, wavData[0]))
 
 	/*
