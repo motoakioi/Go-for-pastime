@@ -2,19 +2,17 @@ package main
 
 import (
 	"fmt"
-	"image/color"
 	"log"
 	"math"
 	"math/cmplx"
-	"os"
 
-	"github.com/oov/audio/wave"
+	"./figHandle"
+	"./readWav"
+
 	"github.com/r9y9/go-dsp/fft"
-	"gonum.org/v1/plot"
-	"gonum.org/v1/plot/plotter"
-	"gonum.org/v1/plot/vg"
 )
 
+/*
 // Show WAV data format
 func FmtDisplay(wfe *wave.WaveFormatExtensible) {
 
@@ -73,7 +71,9 @@ func getWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 
 	return inTmp, wfe
 }
+*/
 
+/*
 // Create figure
 func cre8Figure() *plot.Plot {
 
@@ -133,6 +133,7 @@ func addLine(fig *plot.Plot, xys plotter.XYs) {
 	// Add line to figure
 	fig.Add(plotLine)
 }
+*/
 
 // Calculate power from complex number
 func c2power(inC []complex128) []float64 {
@@ -147,10 +148,10 @@ func c2power(inC []complex128) []float64 {
 func main() {
 
 	// Get wav data from file
-	wavData, wfe := getWavData("./3octaves.wav")
+	wavData, wfe := readWav.GetWavData("../wavData/3octaves.wav")
 
 	// Show wave data format
-	FmtDisplay(wfe)
+	readWav.FmtDisplay(wfe)
 
 	// fft
 	fftDataC := []complex128{}
@@ -160,7 +161,7 @@ func main() {
 	fftDataPow := c2power(fftDataC)
 
 	// Create figure
-	fig := cre8Figure()
+	fig := figHandle.Cre8Figure()
 
 	// Set range of plot
 	var figRange plotRange
@@ -171,11 +172,11 @@ func main() {
 	figRange.yEnd = 1500000
 
 	// Set figure
-	CfgFigure(fig, figRange)
+	figHandle.CfgFigure(fig, figRange)
 
 	fmt.Println("x range after", figRange.xEnd)
 	// Add data as line to figure
-	addLine(fig, cfgPoint(figRange.xEnd, 1.0, fftDataPow))
+	figHandle.addLine(fig, cfgPoint(figRange.xEnd, 1.0, fftDataPow))
 
 	/*
 		// Set function of plot
