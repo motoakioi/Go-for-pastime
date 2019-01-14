@@ -1,9 +1,9 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"image/color"
+	"log"
 	"math"
 	"math/cmplx"
 	"os"
@@ -33,14 +33,14 @@ func getWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 	defer file.Close()
 	// In case of error
 	if erFile != nil {
-		errors.New("Can NOT open .wav file.")
+		log.Fatal("Can NOT open .wav file.")
 	}
 
 	// File Size
 	fInfo, erFInfo := file.Stat()
 	// In case of error
 	if erFInfo != nil {
-		errors.New("Can NOT get file information.")
+		log.Fatal("Can NOT get file information.")
 	}
 	fmt.Println("File size is ", fInfo.Size())
 
@@ -48,7 +48,7 @@ func getWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 	data, wfe, erData := wave.NewReader(file)
 	// In case of error
 	if erData != nil {
-		errors.New("Can NOT read .wav data.")
+		log.Fatal("Can NOT read .wav data.")
 	}
 
 	// Calculate duration
@@ -68,7 +68,7 @@ func getWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 	// Read wave data from struct
 	n, erN := data.ReadFloat64Interleaved(inTmp)
 	if erN != nil {
-		errors.New("Can NOT read data from inTmp.")
+		log.Fatal("Can NOT read data from inTmp.")
 	}
 	fmt.Println("n : ", n)
 
@@ -80,7 +80,7 @@ func cre8Figure() *plot.Plot {
 
 	fig, erFig := plot.New()
 	if erFig != nil {
-		errors.New("Can NOT create figure.")
+		log.Fatal("Can NOT create figure.")
 	}
 
 	return fig
@@ -111,7 +111,6 @@ func CfgFigure(fig *plot.Plot, figRange plotRange) {
 // Set plot struct
 func cfgPoint(x float64, dx float64, y []float64) plotter.XYs {
 	plotTmp := make(plotter.XYs, int(x/dx))
-	fmt.Println("x/dx : ", int(x/dx))
 	for i := 0; i < int(x/dx); i++ {
 		plotTmp[i].X = float64(i) * dx
 		plotTmp[i].Y = y[i]
@@ -149,7 +148,7 @@ func c2power(inC []complex128) []float64 {
 func main() {
 
 	// Get wav data from file
-	wavData, wfe := getWavData("./1khz.wav")
+	wavData, wfe := getWavData("./3khz.wav")
 
 	// Show wave data format
 	FmtDisplay(wfe)
@@ -175,9 +174,7 @@ func main() {
 	CfgFigure(fig, figRange)
 
 	// Add data as line to figure
-	//fmt.Println("wav len : ", len(wavData[0]))
-	fmt.Println("fft data len : ", len(fftDataPow))
-	addLine(fig, cfgPoint(float64(len(fftDataPow)), 1.0, fftDataPow))
+	addLine(fig, cfgPoint(float64(len(fftDataPow)/2), 1.0, fftDataPow))
 
 	/*
 		// Set function of plot
@@ -187,7 +184,9 @@ func main() {
 	*/
 
 	// Save figure (width, height, file name)
-	fig.Save(1000, 400, "wave.pdf")
+	if fig.Save(1000, 400, "wave.pdf") != nil {
+		log.Fatal("Can NOT save figure.")
+	}
 
 	fmt.Println("Done.")
 
