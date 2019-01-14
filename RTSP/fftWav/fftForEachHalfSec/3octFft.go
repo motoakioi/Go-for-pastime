@@ -25,17 +25,24 @@ func c2power(inC []complex128) []float64 {
 func main() {
 
 	// Get wav data from file
-	wavData, wfe := readWav.GetWavData("../wavData/3octaves.wav")
+	wavData, wfe, totalSample := readWav.GetWavData("../wavData/3octaves.wav")
 
 	// Show wave data format
 	readWav.FmtDisplay(wfe)
 
 	// fft
-	fftDataC := []complex128{}
-	fftDataC = fft.FFTReal(wavData[0])
+	duration := 0.5
+	size := int(wfe.Format.SamplesPerSec * duration)
+	times := totalSample / size
+	fftDataR := make([]float64, size)
+	for i := 0; i < times; i++ {
+		tmpFftC := fft.FFTReal(wavData[0][(size * i):(size*(i+1) - 1)])
+		fftDataR += c2power(tmpFftC)
+	}
+	//fftDataC := fft.FFTReal(wavData[0])
 
 	// get power from complex number
-	fftDataPow := c2power(fftDataC)
+	//fftDataPow := c2power(fftDataC)
 
 	// Create figure
 	fig := figHandle.Cre8Figure()
@@ -52,7 +59,8 @@ func main() {
 
 	fmt.Println("x range after", figRange.XEnd)
 	// Add data as line to figure
-	figHandle.AddLine(fig, figHandle.CfgPoint(figRange.XEnd, 1.0, fftDataPow))
+	//figHandle.AddLine(fig, figHandle.CfgPoint(figRange.XEnd, 1.0, fftDataPow))
+	figHandle.AddLine(fig, figHandle.CfgPoint(figRange.XEnd, 1.0, fftDataR))
 
 	/*
 		// Set function of plot
