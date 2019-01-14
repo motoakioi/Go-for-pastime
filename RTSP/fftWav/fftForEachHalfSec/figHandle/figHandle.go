@@ -21,10 +21,10 @@ func Cre8Figure() *plot.Plot {
 }
 
 type PlotRange struct {
-	xStart float64
-	xEnd   float64
-	yStart float64
-	yEnd   float64
+	XStart float64
+	XEnd   float64
+	YStart float64
+	YEnd   float64
 }
 
 // Set figure
@@ -36,10 +36,10 @@ func CfgFigure(fig *plot.Plot, figRange PlotRange) {
 	//fig.Y.Label.Text = "y"
 
 	// Range for each axis
-	fig.X.Min = figRange.xStart
-	fig.X.Max = figRange.xEnd
-	fig.Y.Min = figRange.yStart
-	fig.Y.Max = figRange.yEnd
+	fig.X.Min = figRange.XStart
+	fig.X.Max = figRange.XEnd
+	fig.Y.Min = figRange.YStart
+	fig.Y.Max = figRange.YEnd
 }
 
 // Set plot struct
