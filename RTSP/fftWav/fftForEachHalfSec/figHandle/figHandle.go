@@ -20,7 +20,7 @@ func Cre8Figure() *plot.Plot {
 	return fig
 }
 
-type plotRange struct {
+type PlotRange struct {
 	xStart float64
 	xEnd   float64
 	yStart float64
@@ -28,7 +28,7 @@ type plotRange struct {
 }
 
 // Set figure
-func CfgFigure(fig *plot.Plot, figRange plotRange) {
+func CfgFigure(fig *plot.Plot, figRange PlotRange) {
 
 	// Label config
 	//fig.Title.Text = "CfgFigure func"
