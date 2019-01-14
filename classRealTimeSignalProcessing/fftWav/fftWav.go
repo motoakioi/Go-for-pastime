@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/oov/audio/wave"
+	"github.com/r9y9/go-dsp/fft"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
@@ -51,11 +52,12 @@ func getWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 	}
 
 	// Calculate duration
-	fSize := float32(fInfo.Size())
+	fHeaderSize := int64(44)
+	fSize := float32(fInfo.Size() - fHeaderSize)
 	wavCh := float32(wfe.Format.Channels)
 	wavBit := float32(wfe.Format.BitsPerSample)
 	numSample := int(fSize / (wavCh * (wavBit / 8.0)))
-	fmt.Println("Duration is ", numSample)
+	fmt.Println("Total sample points are ", numSample)
 
 	// Create buffer for data handle
 	inTmp := [][]float64{}
@@ -138,7 +140,7 @@ func addLine(fig *plot.Plot, xys plotter.XYs) {
 func c2power(inC []complex128) []float64 {
 	outR := []float64{}
 	for i := 0; i < len(inC); i++ {
-		outR = append(outR, math.Pow(cmplx.Abs(inC[1]), 2.0))
+		outR = append(outR, math.Pow(cmplx.Abs(inC[i]), 2.0))
 	}
 	return outR
 }
@@ -152,13 +154,11 @@ func main() {
 	// Show wave data format
 	FmtDisplay(wfe)
 
-	/*
-		// fft
-		fftDataC := fft.FFTReal(wavData[0])
+	// fft
+	fftDataC := fft.FFTReal(wavData[0])
 
-		// get power from complex number
-		fftDataPow := c2power(fftDataC)
-	*/
+	// get power from complex number
+	fftDataPow := c2power(fftDataC)
 
 	// Create figure
 	fig := cre8Figure()
@@ -166,16 +166,18 @@ func main() {
 	// Set range of plot
 	var figRange plotRange
 	figRange.xStart = 0
-	figRange.xEnd = float64(len(wavData[0]))
-	figRange.yStart = -1.5
-	figRange.yEnd = 1.5
+	figRange.xEnd = 5000
+	//figRange.xEnd = float64(len(fftDataPow))
+	figRange.yStart = 0
+	figRange.yEnd = 500000000
 
 	// Set figure
 	CfgFigure(fig, figRange)
 
 	// Add data as line to figure
-	fmt.Println("wav len : ", len(wavData[0]))
-	addLine(fig, cfgPoint(float64(len(wavData[0])), 1.0, wavData[0]))
+	//fmt.Println("wav len : ", len(wavData[0]))
+	fmt.Println("fft data len : ", len(fftDataPow))
+	addLine(fig, cfgPoint(float64(len(fftDataPow)), 1.0, fftDataPow))
 
 	/*
 		// Set function of plot
@@ -185,7 +187,7 @@ func main() {
 	*/
 
 	// Save figure (width, height, file name)
-	fig.Save(1500, 400, "wave.pdf")
+	fig.Save(1000, 400, "wave.pdf")
 
 	fmt.Println("Done.")
 
