@@ -19,7 +19,7 @@ func FmtDisplay(wfe *wave.WaveFormatExtensible) {
 }
 
 // Get wav data from file
-func GetWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
+func GetWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible, int32) {
 
 	// File open and close
 	file, erFile := os.Open(fileName)
@@ -49,7 +49,7 @@ func GetWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 	fSize := float32(fInfo.Size() - fHeaderSize)
 	wavCh := float32(wfe.Format.Channels)
 	wavBit := float32(wfe.Format.BitsPerSample)
-	numSample := int(fSize / (wavCh * (wavBit / 8.0)))
+	numSample := int32(fSize / (wavCh * (wavBit / 8.0)))
 	fmt.Println("Total sample points are ", numSample)
 
 	// Create buffer for data handle
@@ -64,5 +64,5 @@ func GetWavData(fileName string) ([][]float64, *wave.WaveFormatExtensible) {
 		log.Fatal("Can NOT read data from inTmp.")
 	}
 
-	return inTmp, wfe
+	return inTmp, wfe, numSample
 }
