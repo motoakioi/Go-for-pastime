@@ -21,6 +21,11 @@ func c2power(inC []complex128) []float64 {
 	return outR
 }
 
+func myfft(in []float64) []float64 {
+	tmpFftC := fft.FFTReal(in)
+	return c2power(tmpFftC)
+}
+
 // main
 func main() {
 
@@ -31,18 +36,19 @@ func main() {
 	readWav.FmtDisplay(wfe)
 
 	// fft
-	duration := 0.5
-	size := int(wfe.Format.SamplesPerSec * duration)
-	times := totalSample / size
-	fftDataR := make([]float64, size)
+	duration := float32(0.5)
+	size := int(float32(wfe.Format.SamplesPerSec) * duration)
+	fmt.Println("size", size)
+	times := int(float32(totalSample) / float32(size))
+	tmpFftData := make([][]float64, times, size)
+	fftData := make([]float64, size)
 	for i := 0; i < times; i++ {
-		tmpFftC := fft.FFTReal(wavData[0][(size * i):(size*(i+1) - 1)])
-		fftDataR += c2power(tmpFftC)
+		tmpFftData[i] = myfft(wavData[0][(size * i):(size * (i + 1))])
+		for j := 0; j < size; j++ {
+			fftData[j] += tmpFftData[i][j]
+		}
 	}
-	//fftDataC := fft.FFTReal(wavData[0])
-
-	// get power from complex number
-	//fftDataPow := c2power(fftDataC)
+	//fmt.Println(fftDataR)
 
 	// Create figure
 	fig := figHandle.Cre8Figure()
@@ -50,17 +56,17 @@ func main() {
 	// Set range of plot
 	var figRange figHandle.PlotRange
 	figRange.XStart = 0
-	figRange.XEnd = float64(wfe.Format.SamplesPerSec / 2)
+	figRange.XEnd = float64(size) / 8
 	figRange.YStart = 0
-	figRange.YEnd = 1500000
+	figRange.YEnd = 150000
 
 	// Set figure
 	figHandle.CfgFigure(fig, figRange)
 
-	fmt.Println("x range after", figRange.XEnd)
+	fmt.Println("x range ", figRange.XEnd)
+	fmt.Println("data len ", len(fftData))
 	// Add data as line to figure
-	//figHandle.AddLine(fig, figHandle.CfgPoint(figRange.XEnd, 1.0, fftDataPow))
-	figHandle.AddLine(fig, figHandle.CfgPoint(figRange.XEnd, 1.0, fftDataR))
+	figHandle.AddLine(fig, figHandle.CfgPoint(figRange.XEnd, 1.0, fftData))
 
 	/*
 		// Set function of plot
@@ -70,7 +76,7 @@ func main() {
 	*/
 
 	// Save figure (width, height, file name)
-	if fig.Save(1000, 400, "fft.pdf") != nil {
+	if fig.Save(500, 200, "piano.pdf") != nil {
 		log.Fatal("Can NOT save figure.")
 	}
 

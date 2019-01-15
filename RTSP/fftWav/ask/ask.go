@@ -9,7 +9,7 @@ import (
 	"os"
 
 	"github.com/oov/audio/wave"
-	"github.com/r9y9/go-dsp/fft"
+//	"github.com/r9y9/go-dsp/fft"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
@@ -98,8 +98,8 @@ func CfgFigure(fig *plot.Plot, figRange plotRange) {
 
 	// Label config
 	//fig.Title.Text = "CfgFigure func"
-	fig.X.Label.Text = "Frequency [Hz]"
-	//fig.Y.Label.Text = "y"
+	fig.X.Label.Text = "Sample"
+	fig.Y.Label.Text = "Amplitude"
 
 	// Range for each axis
 	fig.X.Min = figRange.xStart
@@ -144,37 +144,55 @@ func c2power(inC []complex128) []float64 {
 	return outR
 }
 
+func pow(in []float64) []float64{
+	out := []float64{}
+	for i:= 0; i<len(in); i++{
+		out = append(out, math.Pow(in[i], 2.0))
+	}
+	return out
+}
+
+func datafunc(in []float64, size int) []float64{
+	out := []float64{}
+	for i:=0; i<(len(in)/size); i++{
+		var tmp float64 = 0
+		for j:=0; j<size; j++{
+			tmp += float64(in[i*size+j])
+		}
+		if(tmp > 100){
+			out = append(out, 1)
+		}else{
+			out = append(out, 0)
+		}
+	}
+	return out
+}
+
 // main
 func main() {
 
 	// Get wav data from file
-	wavData, wfe := getWavData("../wavData/1khz.wav")
+	wavData, wfe := getWavData("../wavData/ask.wav")
 
 	// Show wave data format
 	FmtDisplay(wfe)
 
-	// fft
-	fftDataC := fft.FFTReal(wavData[0])
-
-	// get power from complex number
-	fftDataPow := c2power(fftDataC)
-
-	// Create figure
+	// Create Figure
 	fig := cre8Figure()
 
 	// Set range of plot
 	var figRange plotRange
 	figRange.xStart = 0
-	figRange.xEnd = 5000
-	//figRange.xEnd = float64(len(fftDataPow))
+	figRange.xEnd = float64(len(wavData[0])/400)
 	figRange.yStart = 0
-	figRange.yEnd = 500000000
+	figRange.yEnd = 1
 
 	// Set figure
 	CfgFigure(fig, figRange)
 
 	// Add data as line to figure
-	addLine(fig, cfgPoint(float64(len(fftDataPow)/2), 1.0, fftDataPow))
+	addLine(fig, cfgPoint(figRange.xEnd, 1.0, datafunc(pow(wavData[0]), 400)))
+	fmt.Println(datafunc(pow(wavData[0]), 400))
 
 	/*
 		// Set function of plot
@@ -184,7 +202,7 @@ func main() {
 	*/
 
 	// Save figure (width, height, file name)
-	if fig.Save(500, 200, "wave.pdf") != nil {
+	if fig.Save(500, 200, "data.pdf") != nil {
 		log.Fatal("Can NOT save figure.")
 	}
 
