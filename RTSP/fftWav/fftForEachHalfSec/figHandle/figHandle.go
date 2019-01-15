@@ -96,7 +96,7 @@ func AddLineColor(fig *plot.Plot, xys plotter.XYs, setColor int) {
 	plotLine.LineStyle.Width = vg.Points(1)
 	//plotLine.LineStyle.Dashes = []vg.Length{vg.Points(5), vg.Points(5)}
 
-	plotLine.LineStyle.Color = color.RGBA{R: uint8(255 - setColor*20), G: uint8(setColor * 20), B: uint8(255%setColor) * 10, A: 255}
+	plotLine.LineStyle.Color = color.RGBA{R: uint8(255 - setColor*40), G: uint8(50 + setColor*50), B: uint8(255%setColor)*10 + 100, A: 255}
 
 	// Add line to figure
 	fig.Add(plotLine)
