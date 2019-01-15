@@ -42,6 +42,21 @@ func CfgFigure(fig *plot.Plot, figRange PlotRange) {
 	fig.Y.Max = figRange.YEnd
 }
 
+// Set figure
+func CfgFigureName(fig *plot.Plot, figRange PlotRange, x string, y string) {
+
+	// Label config
+	//fig.Title.Text = "CfgFigure func"
+	fig.X.Label.Text = x
+	fig.Y.Label.Text = y
+
+	// Range for each axis
+	fig.X.Min = figRange.XStart
+	fig.X.Max = figRange.XEnd
+	fig.Y.Min = figRange.YStart
+	fig.Y.Max = figRange.YEnd
+}
+
 // Set plot struct
 func CfgPoint(x float64, dx float64, y []float64) plotter.XYs {
 	plotTmp := make(plotter.XYs, int(x/dx))
