@@ -83,3 +83,21 @@ func AddLine(fig *plot.Plot, xys plotter.XYs) {
 	// Add line to figure
 	fig.Add(plotLine)
 }
+
+// Add line from data this func can set color
+func AddLineColor(fig *plot.Plot, xys plotter.XYs, setColor int) {
+
+	// Create Line
+	plotLine, err := plotter.NewLine(xys)
+	if err != nil {
+		panic(err)
+	}
+	// Line config
+	plotLine.LineStyle.Width = vg.Points(1)
+	//plotLine.LineStyle.Dashes = []vg.Length{vg.Points(5), vg.Points(5)}
+
+	plotLine.LineStyle.Color = color.RGBA{R: uint8(255 - setColor*20), G: uint8(setColor * 20), B: uint8(255%setColor) * 10, A: 255}
+
+	// Add line to figure
+	fig.Add(plotLine)
+}
