@@ -35,7 +35,7 @@ func add(in1 []float64, in2 []float64) []float64 {
 
 // BPSK demodulation
 // "in" is input signal, "period" is number of sample per cycle
-func DemBpsk(in []float64, period int) float64 {
+func DemBpsk(in []float64, period int, maxAmp float64) float64 {
 
 	cosTb := []float64{}
 	for i := 0; i < period; i++ {
@@ -45,24 +45,38 @@ func DemBpsk(in []float64, period int) float64 {
 	d := 0.0      // sum of phase difference
 	maxDif := 0.0 // value in case that phase difference is Pi
 	for i := 0; i < len(in); i++ {
-		d += math.Sqrt(math.Pow((cosTb[i%period] - in[i]), 2))
-		maxDif += math.Sqrt(math.Pow((cosTb[i%period] * 2), 2))
+		d += math.Sqrt(math.Pow((maxAmp*cosTb[i%period] - in[i]), 2))
+		maxDif += math.Sqrt(math.Pow((maxAmp * cosTb[i%period] * 2), 2))
 	}
-	fmt.Println(d / maxDif)
 	return d / maxDif * math.Pi
+}
+
+// return max value of slice
+func maxValue(in []float64) float64 {
+	max := 0.0
+	for i := 0; i < len(in); i++ {
+		if max < in[i] {
+			max = in[i]
+		}
+	}
+	return max
 }
 
 func datafunc(in []float64, size int) []float64 {
 	out := []float64{}
+	maxValTmp := maxValue(in) * float64(size) / 2
+	fmt.Println()
+	fmt.Println("'0' means phase difference is 0 rad.")
+	fmt.Println("'1' means phase difference is Pi rad.")
 	for i := 0; i < (len(in) / size); i++ {
-		var tmp float64 = 0
+		tmp := 0.0
 		for j := 0; j < size; j++ {
 			tmp += float64(in[i*size+j])
 		}
-		if tmp > 100 {
-			out = append(out, 1)
-		} else {
+		if tmp > maxValTmp {
 			out = append(out, 0)
+		} else {
+			out = append(out, 1)
 		}
 	}
 	return out
@@ -92,7 +106,7 @@ func main() {
 	// Demodulation BPSK
 	demData := []float64{}
 	for i := 0; i < (len(wavData[0]) / 8); i++ {
-		demData = append(demData, DemBpsk(wavData[0][i*8:i*8+8], 8))
+		demData = append(demData, DemBpsk(wavData[0][i*8:i*8+8], 8, maxValue(wavData[0])))
 		//demData = append(demData, DemBpsk(wavData[0][i*8:i*8+8], 8)...)
 	}
 
@@ -115,7 +129,7 @@ func main() {
 	figHandle.AddLineColor(fig, figHandle.CfgPoint(figRange.XEnd, 1.0, demData), 10)
 
 	// Show domodulated data
-	fmt.Println("Data : ", datafunc(demData, 400))
+	fmt.Println("Data : ", datafunc(demData, 50))
 
 	// Save figure (width, height, file name)
 	if fig.Save(500, 200, "phase2.pdf") != nil {
