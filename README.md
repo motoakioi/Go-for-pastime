@@ -3,59 +3,31 @@ This repository is NOT useful.
 There are datas and source codes for class report. 
 I usually commit to master, because it is troublesome to merging and branching. 
 
-## Directories and Files
-.  
-├── LICENSE  
-├── README.md  
-├── RTSP  
-│   ├── fftWav  
-│   │   ├── ask  
-│   │   │   ├── ask.go  
-│   │   │   ├── data.pdf  
-│   │   │   ├── data.txt  
-│   │   │   └── sos.pdf  
-│   │   ├── dataHandleTest  
-│   │   │   ├── 1khz.pdf  
-│   │   │   ├── 3khz.pdf  
-│   │   │   ├── 6khz.pdf  
-│   │   │   ├── fftWav.go  
-│   │   │   ├── graphPlot.go  
-│   │   │   ├── samplefft.go  
-│   │   │   └── wavRead.go  
-│   │   ├── fftForEachHalfSec  
-│   │   │   ├── 3octFft.go  
-│   │   │   ├── dataHandle  
-│   │   │   ├── fft.pdf  
-│   │   │   ├── figHandle   
-│   │   │   │   └── figHandle.go  
-│   │   │   ├── piano.pdf   
-│   │   │   └── readWav        
-│   │   │  <span>　</span>└── readWav.go   
-│   │   └── wavData      
-│   │  <span>　</span>├── 1khz.wav     
-│   │  <span>　</span>├── 3khz.wav  
-│   │  <span>　</span>├── 3octaves.wav   
-│   │  <span>　</span>├── 6khz.wav   
-│   │  <span>　</span>├── ask.wav   
-│   │  <span>　</span>├── bpsk1.wav   
-│   │  <span>　</span>├── bpsk2.wav   
-│   │  <span>　</span>└── qpsk.wav   
-│   └── psk    
-│ <span>　</span>├── bpsk   
-│ <span>　</span>│   ├── bpsk.go    
-│ <span>　</span>│   └── bpsk.pdf   
-│ <span>　</span>└── wavData    
-│ <span>　　</span>├── ask.wav   
-│ <span>　　</span>├── bpsk1.wav    
-│ <span>　　</span>├── bpsk2.wav    
-│ <span>　　</span>└── qpsk.wav   
-└── practice   
-<span>　　</span>├── calculation-test.go    
-<span>　　</span>├── channelTest.go    
-<span>　　</span>├── goRoutineTest.go   
-<span>　　</span>├── hello-world.go    
-<span>　　</span>└── rand.go    
- 
+## RTSP
+RTSP is for my report.  
+I do not have any responsibility when you submit your report using these codes.
+
+### fConversion
+This directory includes 2 Go codes to convert frequency.   
+- down.go  
+down.go is decimation.
+This is not the punishment for ancient Roman soldiers.
+This code downsamples the wave from 48kHz to 16 kHz.   
+- up.go  
+up.go is interpolation.
+This code upsamples the wave from 8kHz to 32 kHz.  
+
+### fftWav
+Go codes of this directory do frequency analysis of waves by FFT.  
+
+### psk
+- bpsk  
+This code detects BPSK signal.  
+- qpsk   
+This code detect QPSK signal.
+I use the stereo audio as QPSK signal.
+There are 2 BPSK signals for each left and right channels of streo audio.
+Therefore, this code uses my BPSK detection twice.
 
 ## Import packages
 ### RTSP  
