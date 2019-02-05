@@ -18,3 +18,5 @@ classRealTimeSignalProcessing/fftWav/wave.pdf
 classRealTimeSignalProcessing/.DS_Store
 .DS_Store
 classRealTimeSignalProcessing/.DS_Store
+*.pdf
+*.wav
