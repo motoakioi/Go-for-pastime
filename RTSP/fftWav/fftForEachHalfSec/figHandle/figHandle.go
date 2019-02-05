@@ -101,3 +101,22 @@ func AddLineColor(fig *plot.Plot, xys plotter.XYs, setColor int) {
 	// Add line to figure
 	fig.Add(plotLine)
 }
+
+// Add line from data this func can set color
+func AddLineLegendColor(fig *plot.Plot, xys plotter.XYs, legend string, setColor int) {
+
+	// Create Line
+	plotLine, err := plotter.NewLine(xys)
+	if err != nil {
+		panic(err)
+	}
+	// Line config
+	plotLine.LineStyle.Width = vg.Points(1)
+	//plotLine.LineStyle.Dashes = []vg.Length{vg.Points(5), vg.Points(5)}
+
+	plotLine.LineStyle.Color = color.RGBA{R: uint8(255 - setColor*40), G: uint8(50 + setColor*50), B: uint8(255%setColor)*10 + 100, A: 255}
+
+	// Add line to figure
+	fig.Add(plotLine)
+	fig.Legend.Add(legend, plotLine)
+}

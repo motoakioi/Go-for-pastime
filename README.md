@@ -24,7 +24,7 @@ Go codes of this directory do frequency analysis of waves by FFT.
 - bpsk  
 This code detects BPSK signal.  
 - qpsk   
-This code detect QPSK signal.
+This code detects QPSK signal.
 I use the stereo audio as QPSK signal.
 There are 2 BPSK signals for each left and right channels of streo audio.
 Therefore, this code uses my BPSK detection twice.
